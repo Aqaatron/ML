@@ -26,27 +26,22 @@ n_estimators_array = [10, 20, 30, 40, 50]
 scores = []
 for k in n_estimators_array:
     mdl = GradientBoostingClassifier(n_estimators=k, verbose=False, random_state=241)
-    mdl.fit(data, target)
     score = np.mean(cross_val_score(estimator=mdl, X=data, y=target, cv=kf, scoring='roc_auc'))
     scores.append(score)
 scores
 
 
 mdl = GradientBoostingClassifier(n_estimators=50, verbose=False, random_state=241)
-mdl.fit(data, target)
 score = np.mean(cross_val_score(estimator=mdl, X=data, y=target, cv=kf, scoring='roc_auc'))
 
 scores
 
 features_test = pd.read_csv('desktop/features_test.csv', index_col='match_id')
+features_test.count()
 features_test= features_test.fillna(0)
-
-features_test.head()
-
-features_test= features_test.fillna(0)
-
 features_test.count()
 
+mdl.fit(data, target)
 pred = mdl.predict_proba(features_test)[:, 1]
 
 pred
@@ -66,7 +61,6 @@ C_arr = [10 ** x for x in range(-3, 3, 1)]
 scores = []
 for C in C_arr:
     mdl = LogisticRegression(penalty='l2', random_state=241, C=C)
-    mdl.fit(data, target)
     score = np.mean(cross_val_score(estimator=mdl, X=data, y=target, cv=kf, scoring='roc_auc'))
     scores.append(score)
 
@@ -74,13 +68,11 @@ scores
 
 
 mdl = LogisticRegression(penalty='l2', random_state=241, C=0.001)
-mdl.fit(data, target)
 score = np.mean(cross_val_score(estimator=mdl, X=data_scaler, y=target, cv=kf, scoring='roc_auc'))
 
 score
 
 drop_array = ['lobby_type', 'r1_hero', 'r2_hero', 'r3_hero', 'r4_hero', 'r5_hero','d1_hero', 'd2_hero', 'd3_hero', 'd4_hero', 'd5_hero']
-
 
 data_without_categ = data
 for k in range(0,len(drop_array)):
@@ -90,20 +82,15 @@ data_without_categ
 
 kf = KFold(n=len(data), n_folds=5, shuffle=True, random_state=241)
 mdl = LogisticRegression(penalty='l2', random_state=241, C=0.001)
-mdl.fit(data, target)
 score = np.mean(cross_val_score(estimator=mdl, X=data_without_categ, y=target, cv=kf, scoring='roc_auc'))
 
 score
 
-
 scaler.fit(data_without_categ)
 data_without_categ_scaler = scaler.transform(data_without_categ)
 
-
-
 kf = KFold(n=len(data), n_folds=5, shuffle=True, random_state=241)
 mdl = LogisticRegression(penalty='l2', random_state=241, C=0.001)
-mdl.fit(data, target)
 score = np.mean(cross_val_score(estimator=mdl, X=data_without_categ_scaler, y=target, cv=kf, scoring='roc_auc'))
 
 score
